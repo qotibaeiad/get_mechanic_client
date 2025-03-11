@@ -1,4 +1,3 @@
-// lib/ui/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get_mechanic/services/socket_service.dart';
 
@@ -29,6 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  void sendMessage(String title, String content) {
+    var message = {'title': title, 'content': content};
+    SocketService.sendMessage('example_event', message); // Send event with title
+    print('Sent message: $message');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,22 +46,25 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ElevatedButton(
-              onPressed: () {
-                // Send a message to the server
-                var message = {'message': 'Hello from Flutter'};
-                SocketService.sendMessage('example_event', message); // Pass event name and message
-                print('Sent message: $message');
-              },
-              child: Text('Send Message to Server'),
+              onPressed: () => sendMessage('greeting', 'Hello Server!'),
+              child: Text('Send Greeting'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () => sendMessage('file_upload', 'Sending a file...'),
+              child: Text('Send File Upload Request'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () => sendMessage('request_info', 'Requesting information...'),
+              child: Text('Request Information'),
             ),
             SizedBox(height: 20),
             Text(
               'Server Response:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(responseMessage.isEmpty
-                ? 'No response yet'
-                : responseMessage),  // Show the response here
+            Text(responseMessage.isEmpty ? 'No response yet' : responseMessage),
           ],
         ),
       ),
